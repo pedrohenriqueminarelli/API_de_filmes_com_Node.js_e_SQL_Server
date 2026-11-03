@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h2>Acervo de filmes</h2>
+        <p>Cadastre títulos e consulte o catálogo salvo no SQL server.</p>
+    </header>
+    <main>
+        <div>
+            <h3>Novo filme</h3>
+            <div>
+                <label for="">Título</label>
+                <input type="texte" id="titulo" placeholder="Digite o título!">
+            </div>
+            <div>
+                <label for="">Categoria</label>
+                <select name="" id="categorias">
+                    <option value="" disabled selected>Selecione a sua categoria</option>
+                    <script>
+                        async function carregar(){
+                           let categorias = await fetch("http://localhost:8080/api/categorias",{
+                            method:"GET",
+                            headers:{'content-type':'application/json'
+                            }
+                           });
+                           if(!categorias.ok){
+                            alert("Não foi possível carregar as categorias");
+                            return
+                           }
+                           let dados= await categorias.json();
+                           dados.forEach(dado =>{document.getElementById("categorias").innerHTML+=
+                                `
+                                    <option value="${dado.id}">${dado.nome}</option>
+                                `;
+                            });
+                        }
+                        carregar();
+                    </script>
+                </select>
+            </div>
+            <div>
+                <label for="">Diretor</label>
+                <input type="text" id="diretor" placeholder="Digite o diretor!">
+            </div>
+            <div>
+                <label for="">Ano de lançamento</label>
+                <input type="number" id="ano" placeholder="Digite o ano de lançamento">
+            </div>
+            <div>
+                <label for="">Duração</label>
+                <input type="number" id="duracao" placeholder="Digite a duração">
+            </div>
+            <div>
+                <button type="button" onclick="salvar()">Salvar Filme</button> <button type="button" onclick="limpar()">Limpar</button>
+            </div>
+        </div>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Categoria</th>
+                        <th>Diretor</th>
+                        <th>Ano de Lançamento</th>
+                        <th>Duração (Minutos)</th>
+                    </tr>
+                </thead>
+                <tbody id="cadastrados">
+
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script>
+        async function salvar(){
+            const titulo = document.getElementById("titulo").value;
+            const categoria = Number(document.getElementById("categorias").value);
+            const diretor = document.getElementById("diretor").value;
+            const ano = document.getElementById("ano").value;
+            const duracao = document.getElementById("duracao").value;
+            if(!titulo || !categoria || !diretor){
+                alert("Título, categoria e diretor são obrigatórios!");
+                return;
+            }
+            const dados= {
+                titulo: titulo,
+                categoria_id: Number(categoria),
+                diretor: diretor,
+                ano_lancamento: ano ? Number(ano) : null,
+                duracao_minutos: duracao ? Number(duracao) : null
+            };
+            const resposta= await fetch("http://localhost:8080/api/filmes",{
+                method:"POST",
+                headers:{'content-type':'application/json'},
+                body: JSON.stringify(dados)
+            });
+            if(!resposta.ok){
+                alert("Não foi possível salvar o filme.");
+                return;
+            }
+
+            alert("Filme salvo com sucesso!");
+            limpar()
+        }
+        function limpar(){
+            document.getElementById("titulo").value="";
+            document.getElementById("categorias").value="";
+            document.getElementById("diretor").value="";
+            document.getElementById("ano").value="";
+            document.getElementById("duracao").value="";
+        }
+        async function renderizar(){
+            const dados
+        }
+    </script>
+
+</body>
+</html>
