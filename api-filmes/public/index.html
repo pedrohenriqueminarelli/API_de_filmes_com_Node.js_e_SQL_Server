@@ -63,6 +63,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Título</th>
                         <th>Categoria</th>
                         <th>Diretor</th>
@@ -105,6 +106,7 @@
             }
 
             alert("Filme salvo com sucesso!");
+            renderizar();
             limpar()
         }
         function limpar(){
@@ -115,8 +117,28 @@
             document.getElementById("duracao").value="";
         }
         async function renderizar(){
-            const dados
+            const trazer = await fetch("http://localhost:8080/api/filmes",{
+                method:"GET",
+                headers:{'content-type':'application/json'}
+            });
+            if(!trazer.ok){
+                alert("Não foi possível carregar os filmes")
+            }
+            const dados = await trazer.json();
+            dados.forEach(dado=>{
+                document.getElementById("cadastrados").innerHTML+=`
+                    <tr>
+                        <td>${dado.id}</td>
+                        <td>${dado.titulo}</td>
+                        <td>${dado.categoria}</td>
+                        <td>${dado.diretor}</td>
+                        <td>${dado.ano_lancamento}</td>
+                        <td>${dado.duracao_minutos}</td>
+                    </tr>
+                `
+            })
         }
+        renderizar();
     </script>
 
 </body>

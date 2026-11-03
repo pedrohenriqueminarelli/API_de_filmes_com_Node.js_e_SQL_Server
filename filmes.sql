@@ -15,3 +15,10 @@ create schema dbFilmes;
 		foreign key (categoria_id)
 			references dbFilmes.categorias(id)
 	);
+    insert into dbfilmes.categorias (nome) VALUES 
+    ('Ação'),
+    ('Aventura'),
+    ('Romance'),
+    ('Terror'),
+    ('Comédia');
+    select * from dbfilmes. categorias
